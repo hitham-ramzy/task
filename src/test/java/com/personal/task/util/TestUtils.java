@@ -1,4 +1,4 @@
-package com.personal.task.service.util;
+package com.personal.task.util;
 
 import com.personal.task.domain.Item;
 import com.personal.task.domain.User;

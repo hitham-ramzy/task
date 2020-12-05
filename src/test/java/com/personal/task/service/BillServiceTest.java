@@ -6,14 +6,13 @@ import com.personal.task.domain.Item;
 import com.personal.task.domain.User;
 import com.personal.task.domain.UserType;
 import com.personal.task.repository.BillRepository;
-import com.personal.task.service.util.TestUtils;
+import com.personal.task.util.TestUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -44,7 +43,7 @@ public class BillServiceTest {
         Item item = TestUtils.buildItem(20L, 10D);
         when(itemService.findById(any(Long.class))).thenReturn(item);
 
-        Bill bill = testee.save(TestUtils.buildBillDTO());
+        testee.save(TestUtils.buildBillDTO());
         verify(billRepository, times(1)).save(any(Bill.class));
     }
 

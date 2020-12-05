@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 import static com.personal.task.service.DiscountStrategyService.getAmountDiscount;
 import static com.personal.task.service.DiscountStrategyService.getUserDiscount;
-import static com.personal.task.util.applicationUtils.calculateBillPrice;
+import static com.personal.task.util.ApplicationUtils.calculateBillPrice;
 
 @Service
 public class BillService {
