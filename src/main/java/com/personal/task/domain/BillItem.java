@@ -29,7 +29,7 @@ public class BillItem {
     private Item item;
 
     @ManyToOne
-    @JoinColumn(name = "bill_item_id")
+    @JoinColumn(name = "bill_id")
     private Bill bill;
 
 }
