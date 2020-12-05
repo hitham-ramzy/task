@@ -38,5 +38,5 @@ public class User {
     ZonedDateTime joinedAt = ZonedDateTime.now();
 
     @Column(name = "user_type")
-    UserType userType;
+    UserType userType = UserType.NORMAL;
 }

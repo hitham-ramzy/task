@@ -25,7 +25,7 @@ public class BillItem {
     private Long id;
 
     @Column
-    private Double amount;
+    private Integer amount;
 
     @OneToOne
     @JoinColumn(name = "item_id", referencedColumnName = "id")

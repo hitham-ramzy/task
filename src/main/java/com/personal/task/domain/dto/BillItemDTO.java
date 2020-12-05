@@ -7,6 +7,6 @@ public class BillItemDTO {
 
     private Long itemId;
 
-    private Double amount;
+    private Integer amount;
 
 }
