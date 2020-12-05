@@ -26,6 +26,7 @@ import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * Swagger config.
@@ -33,6 +34,7 @@ import springfox.documentation.spring.web.plugins.Docket;
  * extending {@link SwaggerConfiguration} to add api-key for using token in swagger
  */
 @Configuration
+@EnableSwagger2
 public class SwaggerConfig {
     @Bean
     public Docket api() {
