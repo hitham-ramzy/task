@@ -17,4 +17,7 @@ public class ItemService {
         return itemRepository.findById(id).orElse(null);
     }
 
+    public Item save(Item item) {
+        return itemRepository.save(item);
+    }
 }

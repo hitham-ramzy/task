@@ -1,6 +1,7 @@
 package com.personal.task.domain;
 
 import lombok.Data;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,8 +33,9 @@ public class User {
     @Column
     String country;
 
+    @NonNull
     @Column(name = "joined_at")
-    ZonedDateTime joinedAt;
+    ZonedDateTime joinedAt = ZonedDateTime.now();
 
     @Column(name = "user_type")
     UserType userType;
