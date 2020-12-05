@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-//import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotNull;
+
 
 @RestController
 @RequestMapping("/api")
@@ -24,13 +25,9 @@ public class UserResource {
 
 
     @PostMapping("/user")
-    public ResponseEntity<User> createUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<User> createUser(@NotNull @RequestBody UserDTO userDTO){
         User user = ResourceMapper.INSTANCE.mapToUser(userDTO);
         return ResponseEntity.ok(userService.save(user));
     }
 
-    @PostMapping("/user-test")
-    public ResponseEntity<String> createUser2(@RequestBody String userDTO){
-        return ResponseEntity.ok(userDTO);
-    }
 }
