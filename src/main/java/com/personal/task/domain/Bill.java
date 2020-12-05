@@ -2,6 +2,7 @@ package com.personal.task.domain;
 
 import lombok.Data;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,15 +27,15 @@ public class Bill {
     private Double priceBeforeDiscount;
 
     @Column(name = "percentage_discount")
-    private Double appliedPercentageDiscount;
+    private Double percentageDiscount= 0D;
 
     @Column(name = "amount_discount")
-    private Double amountDiscount;
+    private Double amountDiscount = 0D;
 
     @Column(name = "total_price")
     private Double totalPrice;
 
-    @OneToMany(mappedBy = "bill")
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL)
     private List<BillItem> items;
 
     @ManyToOne
