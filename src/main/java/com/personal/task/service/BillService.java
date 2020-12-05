@@ -1,11 +1,8 @@
 package com.personal.task.service;
 
-import com.personal.task.domain.AffiliateDiscount;
 import com.personal.task.domain.Bill;
 import com.personal.task.domain.BillItem;
 import com.personal.task.domain.Discount;
-import com.personal.task.domain.EmployeeDiscount;
-import com.personal.task.domain.Every100DollarDiscount;
 import com.personal.task.domain.Item;
 import com.personal.task.domain.User;
 import com.personal.task.domain.dto.BillDTO;
@@ -14,6 +11,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.personal.task.service.DiscountStrategyService.getAmountDiscount;
+import static com.personal.task.service.DiscountStrategyService.getUserDiscount;
+import static com.personal.task.util.applicationUtils.calculateBillPrice;
 
 @Service
 public class BillService {
@@ -29,56 +30,40 @@ public class BillService {
     }
 
     public Bill save(BillDTO billDTO) {
+        Bill bill = new Bill();
+
         User user = userService.findById(billDTO.getUserId());
         if (user == null) {
             // TODO :: handle error
             throw new RuntimeException();
         }
-
-        Bill bill = new Bill();
-        bill.setCustomer(user);
-
-        List<BillItem> billItems = getBillItems(billDTO);
-        bill.setItems(billItems);
-
+        List<BillItem> billItems = getBillItems(bill, billDTO);
         Double priceBeforeDiscount = calculateBillPrice(billItems);
-        bill.setPriceBeforeDiscount(priceBeforeDiscount);
 
+        Double percentageDiscount = 0D;
         Discount userDiscount = getUserDiscount(user);
         if (userDiscount != null) {
-            Double percentageDiscount = userDiscount.calculate(bill.getPriceBeforeDiscount());
-            bill.setPercentageDiscount(percentageDiscount);
+            percentageDiscount = userDiscount.calculate(priceBeforeDiscount);
         }
 
-        Discount amountDiscount = getAmountDiscount(bill.getPriceBeforeDiscount());
+        Double discount = 0D;
+        Discount amountDiscount = getAmountDiscount(priceBeforeDiscount);
         if (amountDiscount != null) {
-            Double discount = amountDiscount.calculate(bill.getPriceBeforeDiscount());
-            bill.setAmountDiscount(discount);
+            discount = amountDiscount.calculate(priceBeforeDiscount);
         }
 
-        bill.setTotalPrice(priceBeforeDiscount - bill.getPercentageDiscount() - bill.getAmountDiscount());
+        Double totalPrice = priceBeforeDiscount - percentageDiscount - discount;
+
+        bill.setCustomer(user);
+        bill.setItems(billItems);
+        bill.setPriceBeforeDiscount(priceBeforeDiscount);
+        bill.setPercentageDiscount(percentageDiscount);
+        bill.setAmountDiscount(discount);
+        bill.setTotalPrice(totalPrice);
         return billRepository.save(bill);
     }
 
-
-    private Discount getUserDiscount(User user) {
-        switch (user.getUserType()) {
-            case EMPLOYEE:
-                return new EmployeeDiscount();
-            case AFFILIATE:
-                return new AffiliateDiscount();
-        }
-        return null;
-    }
-
-    private Discount getAmountDiscount(Double priceBeforeDiscount){
-        if (priceBeforeDiscount > 100){
-            return new Every100DollarDiscount();
-        }
-        return null;
-    }
-
-    private List<BillItem> getBillItems(BillDTO billDTO) {
+    private List<BillItem> getBillItems(Bill bill, BillDTO billDTO) {
         return billDTO.getItems().stream().map(billItemDTO -> {
             Item item = itemService.findById(billItemDTO.getItemId());
             if (item == null) {
@@ -88,11 +73,8 @@ public class BillService {
             BillItem billItem = new BillItem();
             billItem.setAmount(billItemDTO.getAmount());
             billItem.setItem(item);
+            billItem.setBill(bill);
             return billItem;
         }).collect(Collectors.toList());
-    }
-
-    private Double calculateBillPrice(List<BillItem> billItems) {
-        return billItems.stream().mapToDouble(billItem -> billItem.getItem().getPrice() * billItem.getAmount()).sum();
     }
 }
