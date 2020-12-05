@@ -13,6 +13,8 @@ This service uses:
  - Junit for unit testing
  
  
+ You can check the class diagram in resource/docs/class-diagram
+ 
  This service assuming the request sent from a service which already has a security layer, so no security layers added to this service
  
  
